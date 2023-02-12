@@ -9,6 +9,7 @@ REP.Tablet.Data = {
     isOpen: false,
     PlayerData: {},
 };
+
 REP.Tablet.Config = {}
 var found = false;
 
@@ -18,6 +19,7 @@ $(function() {
         e.preventDefault();
         LoadJobCenter();
     });
+
     $(".tablet__back--mainscreen").on("click", function() { 
         $("#job-screen").fadeOut("1500");
         $("#create-screen").fadeOut("1500");
@@ -25,6 +27,7 @@ $(function() {
         $("#tasks-screen").fadeOut("1500");
         $("#main-screen").show();
     });
+
     $("#date").html(getDate());    
     $(".tablet__info h3").html(getTime());    
 
@@ -34,11 +37,10 @@ $(function() {
     };
 
     REP.Tablet.Functions.CloseTablet = function() {
-        $("#job-screen").fadeOut("1500");
-        $("#create-screen").fadeOut("1500");
-        $("#group-screen").fadeOut("1500");
-        $("#tasks-screen").fadeOut("1500");
-        $("#main-screen").show();
+        // $("#job-screen").fadeOut("1500");
+        // $("#create-screen").fadeOut("1500");
+        // $("#group-screen").fadeOut("1500");
+        // $("#tasks-screen").fadeOut("1500");
         $("#tablet").fadeOut("1500");
         $.post('https://rep-tablet/Close');
         REP.Tablet.Data.IsOpen = false;
@@ -92,6 +94,7 @@ $(function() {
 
     REP.Tablet.Functions.LoadPlayerData = function(data) {
         REP.Tablet.Data.PlayerData = data;
+
     }
 
     REP.Tablet.Functions.LoadConfig = function(data) {
@@ -235,12 +238,12 @@ $(function() {
 
     window.addEventListener('message', function(e) {
         if (e.data.action === 'open') {
-            $("#tasks-screen").hide();
-            $("#group-screen").hide();
-            $("#create-screen").hide();
-            $("#job-screen").hide();
+            // $("#tasks-screen").hide();
+            // $("#group-screen").hide();
+            // $("#create-screen").hide();
+            // $("#job-screen").hide();
             $("#user-name").html(e.data.name);
-            REP.Tablet.Functions.LoadPlayerData(e.data.data)
+            REP.Tablet.Functions.LoadPlayerData(e.data.data);
             REP.Tablet.Functions.OpenTablet();
             REP.Tablet.Data.isOpen = true;
         } else if (e.data.action === 'CustomNotification') {

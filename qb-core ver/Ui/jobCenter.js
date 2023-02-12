@@ -52,7 +52,7 @@ function LoadJobCenter() {
 $(function() {  
     window.addEventListener('message', function(e) {
         if (e.data.action === 'jobcenter') {
-            closeAllScreen()
+            closeAllScreen();
             $("#job-screen").fadeIn("1500");
             addJobsList(e.data.data);
         };

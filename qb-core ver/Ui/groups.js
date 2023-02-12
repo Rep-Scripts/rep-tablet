@@ -56,9 +56,7 @@ function closeAllScreen() {
 
 $(document).on("click", "#check-out", function(e) {
     e.preventDefault();
-    $("#create-screen").hide();
-    $("#main-screen").hide();
-    $("#job-screen").fadeIn("1500");
+    $.post("https://rep-tablet/checkOut", JSON.stringify({}), function() {});
 });
 
 $(document).on("click", "#job-ready", function(e) {
@@ -96,31 +94,34 @@ $(document).on("click", "#join-group", function (e) {
 
 $(document).on("click", "#disband-group", function(e) {
     var id = $(this).data('id');
-    $.post("https://rep-tablet/LeaveGroup", JSON.stringify({id: id})).then(function(response) {
-        console.log(response);
-    }).catch(function(error) {
-        console.error(error);
-    });
+    $.post("https://rep-tablet/DisbandGroup", JSON.stringify({id: id}), function() {});
 });
 
 $(document).on("click", "#leave-group", function(e) {
     var id = $(this).data('id');
-    $.post("https://rep-tablet/LeaveGroup", JSON.stringify({id: id})).then(function(response) {
-        console.log(response);
-    }).catch(function(error) {
-        console.error(error);
-    });
+    $.post("https://rep-tablet/LeaveGroup", JSON.stringify({id: id}), function() {});
+});
+
+$(document).on("click", "#expand-modal", function(e) {
+    e.preventDefault();
+    $("#task-overlay").fadeIn("1500");
+    $("#task-modal").fadeIn("1500");
+});
+
+$(document).on("click", "#task-close", function(e) {
+    e.preventDefault();
+    $("#task-overlay").fadeOut("1500");
+    $("#task-modal").fadeOut("1500");
 });
 
 function addGroupJobs(data) {
     if (data.status == true) {
-        closeAllScreen()
+        closeAllScreen();
         $("#tasks-screen").show();
         let tasksPerRow = 2;
         $("#tasks-list").html("");
         clearInterval(Interval);
         Interval = setInterval(startTimer, 10);
-    
         let rowHTML = '';
         let taskCounter = 0;
         for (const [k, v] of Object.entries(data.stage)) {
@@ -138,7 +139,8 @@ function addGroupJobs(data) {
                 addOption =
                 `
                     <div class="__tablet--task-item">
-                        <i class="fa-solid fa-business-time"></i>
+                        <i class="fa-solid fa-expand expand__icon" id="expand-modal"></i>
+                        <i class="fa-solid fa-business-time task__icon"></i>
                         <div class="task__name isDone">${v.name}</div>
                         <div class="progress--task">
                             <i class="fa-solid fa-circle-check ${v.id}" style="color: rgb(51, 237, 0);"></i>
@@ -149,9 +151,10 @@ function addGroupJobs(data) {
             } else {
                 addOption =
                 `
-                <div class="__tablet--task-item">
-                    <i class="fa-solid fa-business-time"></i>
-                    <div class="task__name">${v.name}</div>
+                    <div class="__tablet--task-item">
+                        <i class="fa-solid fa-expand expand__icon" id="expand-modal"></i>
+                        <i class="fa-solid fa-business-time task__icon"></i>
+                        <div class="task__name">${v.name}</div>
                         <div class="progress--task">
                             <i class="fa-solid fa-circle-info ${v.id}" style="color: rgb(255, 52, 52);"></i>
                             <p><span id="task-count" style="color: rgb(255, 52, 52);">${count}</span> / <span class="task-require">${max}</span></p>
@@ -169,10 +172,11 @@ function addGroupJobs(data) {
             } else {
                 rowHTML += '<div class="connect-line"></div>';
             }
+            $(".__tablet--modal-content").html(v.name);
         }
         $("#tasks-list").append(rowHTML);
     } else {
-        closeAllScreen()
+        closeAllScreen();
         $("#group-screen").show();
         var memberList = $('.__tablet--member-list');
         memberList.html("");
@@ -235,11 +239,11 @@ function addGroupJobs(data) {
         if (itemCounter > 0) {
             rowHTML += '</div>';
             memberList.append(rowHTML);
-        }  
-    }
-}
+        };
+    };
+};
 
-function addIdleGroup(data,job) {
+function addIdleGroup(data, job) {
     var addOption;
     var row = `<div class="__tablet--row">`;
     var idleList = $("#group-idle");
@@ -247,6 +251,8 @@ function addIdleGroup(data,job) {
     if(data && data.length > 0) {
         Object.keys(data).map(function(element, index) {
             if(!data[element].status && data[element].job === job ) {
+                console.log(job)
+                console.log(JSON.stringify(REP.Tablet.Config))
                 addOption = `
                     <div class="__tablet--group-item">
                         <i class="fa-solid fa-users icon__idle"></i>
@@ -279,8 +285,8 @@ function addIdleGroup(data,job) {
         });
     } else {
         idleList.html(`<div class="__tablet--group-idle">There are no idle groups available</div>`);
-    }     
-}
+    };     
+};
 
 function addBusyGroup(data, job) {
     var addOption;
@@ -320,8 +326,8 @@ function addBusyGroup(data, job) {
         });
     } else {
         busyList.html(`<div class="__tablet--group-busy">There are no busy groups available</div>`);
-    }
-}
+    };
+};
 
 function startTimer() {
     tens++; 
@@ -351,13 +357,13 @@ function startTimer() {
         seconds = 0;
         appendSeconds.innerHTML = "0" + 0;
     }
-}
+};
 
 $(function() {  
     window.addEventListener('message', function(e) {
         if (e.data.action === 'refreshApp') {
             closeAllScreen();
-            jobPlayer = e.data.job
+            jobPlayer = e.data.job;
             $("#create-screen").fadeIn("1500");
             addBusyGroup(e.data.data, e.data.job);
             addIdleGroup(e.data.data, e.data.job);
@@ -365,6 +371,14 @@ $(function() {
             addGroupJobs(e.data.status);
         } else if (e.data.action === 'reLoop') {
             setTimeout(showNotification, REP.Tablet.Config[jobPlayer].time.second);
+        } else if (e.data.action === 'cancelReady') {
+            e.preventDefault();
+            $("#job-ready").removeClass("checked");
+            $("#job-ready p").text("ready for work");
+            $(".spinner").removeClass("bx-loader-alt spin").addClass("bxs-briefcase");
+            $("#job-notready").remove();
+            notReadyButtonAdded = false;
+            REP.Tablet.Animations.TopSlideUp(".__tablet--notification-container-new", 600, -10);
         }
     });
 });

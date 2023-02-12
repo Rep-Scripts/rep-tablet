@@ -164,10 +164,16 @@
                                 <i class="fa-solid fa-list-check"></i>
                                 <h3 class="__tablet--header-content">group tasks</h3>
                             </div>
+                            <div class="__tablet--header--right animate__animated animate__fadeInRight">
+                                <p>Time: <span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
+                            </div>
                         </div>
                         <div class="__tablet--task-list animate__animated animate__fadeIn animate__delay-4s" id="tasks-list"></div>
-                        <div class="__tablet--task-timer">
-                            <p><span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
+                        <div class="__tablet--task-overlay" id="task-overlay"></div>
+                        <div class="__tablet--task-modal" id="task-modal">
+                            <h3 class="__tablet--modal-header">Task Information</h3>
+                            <i class="fa-solid fa-xmark" id="task-close"></i>
+                            <p class="__tablet--modal-content"></p>
                         </div>
                         <div class="tablet__back--mainscreen"></div>
                     </div>

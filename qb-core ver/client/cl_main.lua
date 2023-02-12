@@ -1,8 +1,7 @@
-QBCore = exports['qb-core']:GetCoreObject()
+Core = exports['qb-core']:GetCoreObject()
 local tabletProp = 0
 local tabletModel = joaat("prop_cs_tablet")
 local isOpen = false
-PlayerData = QBCore.Functions.GetPlayerData()
 local isSignoff = false
 
 local function LoadAnimation(dict)
@@ -90,18 +89,21 @@ local function OpenTablet()
         isOpen = true
         Anim()
     else
-        QBCore.Functions.Notify("You don't have a tablet?", "error")
+        Core.Functions.Notify("You don't have a tablet?", "error")
     end
 end
 
 --Command
 
 RegisterCommand('tablet', function()
+    while not PlayerData do
+        Wait(100)
+    end
     if not isOpen then
         if not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() then
             OpenTablet()
         else
-            QBCore.Functions.Notify("Action not available at the moment..", "error")
+            Core.Functions.Notify("Action not available at the moment..", "error")
         end
     end
 end)

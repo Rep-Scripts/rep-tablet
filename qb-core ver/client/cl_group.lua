@@ -1,4 +1,3 @@
-
 local inJob = false
 local requestCoolDown = false
 local isGroupLeader = false
@@ -56,7 +55,7 @@ exports("ReQuest", ReQuest)
 RegisterNUICallback('GetData', function(data, cb)
     local job = LocalPlayer.state.nghe
     if job then
-        QBCore.Functions.TriggerCallback('rep-tablet:callback:getGroupsApp', function (bool, data)
+        Core.Functions.TriggerCallback('rep-tablet:callback:getGroupsApp', function (bool, data)
             if bool then
                 SendNUIMessage({
                     action = "addGroupStage",  -- Khi set State thì status về true, còn refresh App thì status của job về false. Nếu Stage == {} thì đưa về giao diện các thành viên trong nhóm
@@ -111,8 +110,25 @@ RegisterNUICallback('RequestToJoin', function (data, cb)
         Wait(5000)
         requestCoolDown = false
     else
-        QBCore.Functions.Notify("You need to wait before requesting again", "error")
+        Core.Functions.Notify("You need to wait before requesting again", "error")
     end
+end)
+
+RegisterNUICallback('checkOut', function (data, cb)
+    if groupID ~= 0 or inJob then
+        TriggerServerEvent('rep-tablet:server:LeaveGroup', groupID)
+        if inJob then
+            SendNUIMessage({
+            action = "closeAllNotification",
+        })
+        end
+    end
+    LocalPlayer.state:set('nghe', nil, false)
+    TriggerEvent('rep-tablet:client:checkout')
+    SendNUIMessage({
+        action = "jobcenter",
+        data = JobCenter,
+    })
 end)
 
 -- Out khỏi nhóm
@@ -126,6 +142,15 @@ RegisterNUICallback('LeaveGroup', function(data, cb) --data của nhóm ấn và
     end
 end)
 
+RegisterNUICallback('DisbandGroup', function(data, cb) --data của nhóm ấn vào
+    if not data then return end
+    local success = ReQuest("Job Center", 'Are you sure you want to disband the group?', 'fas fa-users', '#FFBF00', "NONE", 'bx bxs-check-square', 'bx bxs-x-square')
+    if success then
+        isGroupLeader = false
+        TriggerServerEvent('rep-tablet:server:DisbandGroup', groupID)
+        cb("ok")
+    end
+end)
 -- Event
 
 -- Làm mới nhóm, ai đang trong stage sẽ không sửa lại
@@ -143,7 +168,7 @@ end)
 -- Khi mà sign in thì sẽ hiện các ra các nhóm của nghề đó
 RegisterNetEvent('rep-tablet:client:signIn', function(bool)
     LocalPlayer.state:set('nghe', bool, false)
-    QBCore.Functions.TriggerCallback('rep-tablet:callback:getGroupsApp', function (bool, data)
+    Core.Functions.TriggerCallback('rep-tablet:callback:getGroupsApp', function (bool, data)
         if bool then
         else
             SendNUIMessage({
@@ -199,6 +224,12 @@ RegisterNetEvent('rep-tablet:client:requestJoinGroup', function(target)
     end
 end)
 
+RegisterNetEvent('rep-tablet:client:notReady', function ()
+    SendNUIMessage({
+        action = "cancelReady",
+    })
+end)
+
 --Update Group Job
 RegisterNetEvent('rep-tablet:client:updateGroupJob', function (data)
     Config.JobCenter = data
@@ -242,29 +273,11 @@ RegisterNetEvent('rep-tablet:jobcenter:sanitation', function()
     SetNewWaypoint(-351.44, -1566.37)
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    Wait(5000)
-    PlayerData = QBCore.Functions.GetPlayerData()
-    vpn = QBCore.Functions.HasItem('vpn')
-    JobCenter = {}
-    for k, v in pairs(Config.JobCenter) do
-        if vpn then
-            JobCenter[#JobCenter+1] = v
-        else
-            if v.vpn == false then
-                JobCenter[#JobCenter+1] = v
-            end
-        end
-    end
-    LocalPlayer.state.nghe = nil
-end)
-
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     PlayerData = nil
 end)
 
 local function CheckVPN()
-    local PlayerData = QBCore.Functions.GetPlayerData()
     for _, itemData in pairs(PlayerData.items) do
         if itemData.name == 'vpn' then
             return true
@@ -296,8 +309,8 @@ end)
 -- Handles state if resource is restarted live.
 AddEventHandler('onResourceStart', function(resource)
     if GetCurrentResourceName() == resource then
-        PlayerData = QBCore.Functions.GetPlayerData()
-        vpn = QBCore.Functions.HasItem('vpn')
+        PlayerData = Core.Functions.GetPlayerData()
+        vpn = CheckVPN()
         JobCenter = {}
         for k, v in pairs(Config.JobCenter) do
             if vpn then
@@ -312,10 +325,11 @@ AddEventHandler('onResourceStart', function(resource)
     end
 end)
 
-CreateThread(function ()
-    QBCore.Functions.TriggerCallback('rep-tablet:callback:getGroupsJob', function (data)
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+    Core.Functions.TriggerCallback('rep-tablet:callback:getGroupsJob', function (data)
         Config.JobCenter = data
     end)
+    vpn = CheckVPN()
     loadConfig()
     JobCenter = {}
     for k, v in pairs(Config.JobCenter) do
@@ -327,14 +341,5 @@ CreateThread(function ()
             end
         end
     end
+    PlayerData = Core.Functions.GetPlayerData()
 end)
-
----Load khi co ng vao group
-RegisterNetEvent('rep-tablet:client:DisbandGroup',function(groupdata)
-    if groupID == groupdata.id then
-        SendNUIMessage({
-            action = "leavegroup",
-        })
-    end
-end)
-
