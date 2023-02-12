@@ -1,0 +1,116 @@
+.__tablet--notification-container,
+.__tablet--notification-container-new {
+    position: absolute;
+    height: 7vh;
+    width: 40vh;
+    background: rgba(58, 65, 71, 0.806);
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: -10%;
+    overflow: hidden;
+    box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.11);
+    z-index: 9999999999;
+    border-radius: .4vw;
+    padding: 1.2vh 1vw;
+}
+
+.__tablet--notification-top {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: .48vh;
+}
+
+.__tablet--notification-container-new .__tablet--notification-top {
+    margin-bottom: .25vh;
+}
+
+.__tablet--notification-item {
+    display: flex;
+    align-items: center;
+    width: 50%;
+    gap: .5vw;
+}
+
+.notification-icon,
+.notification-icon-new {
+    width: 3vh;
+    height: 50%;
+    text-align: center;
+    line-height: 2.8vh;
+    color: var(--white-color);
+    font-size: 2.4vh;
+}
+
+.notification-title,
+.notification-title-new {
+    font-size: 1.5vh;
+    color: var(--white-color);
+    text-transform: var(--main-font-transform);
+    font-weight: 600;
+}
+
+.notification-time,
+.notification-time-new {
+    font-size: 1.5vh;
+    color: rgb(255, 255, 255);
+    text-transform: capitalize;
+}
+
+.notification-text,
+.notification-text-new {
+    font-size: 1.4vh;
+    color: rgb(255, 255, 255);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.notification-text {
+    max-width: 100%;
+}
+
+.notification-text-new {
+    max-width: 65%;
+}
+
+.__tablet--notification-bottom {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.__tablet--notification-btn {
+    display: flex;
+    align-items: center;
+    gap: .25vw;
+}
+
+.__tablet--notification-btn > * {
+    transition: .25s ease;
+}
+
+.notification-accept {
+    font-size: 1.9vh;
+    color: rgb(26, 176, 26);
+    cursor: pointer;
+}   
+
+.notification-accept:hover {
+    color: rgb(34, 233, 34);
+}
+
+.notification-deny {
+    font-size: 1.9vh;
+    color: rgb(201, 28, 28);
+    cursor: pointer;
+}
+
+.notification-deny:hover {
+    color: rgb(238, 33, 33);
+}
+

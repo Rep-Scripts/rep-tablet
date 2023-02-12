@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="./notify.css">
+    <link rel="stylesheet" href="./style.css">
+    <title>REP TABLET</title>
+</head>
+<body style="background-color: none !important;">
+    <!-- Tablet Notification -->
+    <div class="__tablet--notification-container">
+        <div class="__tablet--notification-top">
+            <div class="__tablet--notification-item">
+                <div class="notification-icon"></div>
+                <div class="notification-title"></div>
+            </div>
+            <div class="notification-time"></div>
+        </div>
+        <div class="notification-text"></div>
+    </div>
+
+    <div class="__tablet--notification-container-new">
+        <div class="__tablet--notification-top">
+            <div class="__tablet--notification-item">                        
+                <div class="notification-icon-new"></div>
+                <div class="notification-title-new"></div>
+            </div>
+            <div class="notification-time-new"></div>
+        </div>
+        <div class="__tablet--notification-bottom">
+            <div class="notification-text-new"></div>
+            <div class="__tablet--notification-btn">
+                <div class="notification-accept"></div>
+                <div class="notification-deny"></div>
+            </div>
+        </div>
+    </div>
+    <div class="tablet" id="tablet">
+        <!-- <div class="overlay"></div> -->
+        <div class="tablet__border animate__animated animate__fadeIn">
+            <div class="tablet__container">
+                <div class="tablet__header animate__animated animate__fadeIn animate__delay-1s">
+                    <div class="tablet__header--items">
+                        <p>Welcome, <span id="user-name">Hwan Dep Trai</span></p>
+                    </div>
+                    <div class="tablet__header--items">
+                        <p id="date">Friday, 04/11/2022</p>
+                    </div>
+                    <div class="tablet__header--items">
+                        <i class='bx bx-stopwatch'></i>
+                        <i class='bx bx-bluetooth'></i>
+                        <i class='bx bx-signal-5'></i>
+                        <i class='bx bx-wifi'></i>
+                        <i class='bx bxs-battery'></i>
+                        <p>100%</p>
+                    </div>
+                </div>
+                <div class="tablet__wrapper" id="main-screen">
+                    <div class="tablet__apps">
+                        <div class="tablet__app--item animate__animated animate__fadeInUp animate__delay-5s">
+                            <img src="./imgs/app/settings_app.png" alt="">
+                            <p class="tablet__app--content">Settings</p>
+                        </div>
+                        <div class="tablet__app--item animate__animated animate__fadeInUp animate__delay-6s">
+                            <img src="./imgs/app/google_app.png" alt="">
+                            <p class="tablet__app--content">Google</p>
+                        </div>
+                        <div class="tablet__app--item animate__animated animate__fadeInUp animate__delay-7s" id="job-app">
+                            <img src="./imgs/app/job_app.png" alt="">
+                            <p class="tablet__app--content">Job Center</p>
+                        </div>
+                        <div class="tablet__app--item animate__animated animate__fadeInUp animate__delay-8s">
+                            <img src="./imgs/app/facebook_app.png" alt="">
+                            <p class="tablet__app--content">Facebook</p>
+                        </div>
+                        <div class="tablet__app--item animate__animated animate__fadeInUp animate__delay-9s">
+                            <img src="./imgs/app/instagram_app.png" alt="">
+                            <p class="tablet__app--content">Instagram</p>
+                        </div>
+                    </div>
+                    <div class="tablet__info">
+                        <h3 class="animate__animated animate__fadeInRight animate__delay-2s"></h3>
+                        <div class="bars animate__animated animate__fadeIn animate__delay-4s"></div>
+                        <div class="tablet__info--weather animate__animated animate__fadeInLeft animate__delay-2s">
+                            <img src="./imgs/cloudy.png" alt="">
+                            <div class="tablet__info--weather--content">
+                                <p class="tablet__weather--top">35° C</p>
+                                <p class="tablet__weather--bottom">Ha Noi, Viet Nam</p>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="./imgs/logo.png" alt="" class="logo animate__animated animate__fadeIn animate__delay-5s">
+                </div>  
+                <div class="tablet__wrapper" id="job-screen">
+                    <div class="__tablet">
+                        <div class="__tablet--header">
+                            <div class="__tablet--header--left animate__animated animate__fadeInLeft">
+                                <i class='bx bxs-briefcase'></i>
+                                <h3 class="__tablet--header-content">job center</h3>
+                            </div>
+                            <div class="__tablet--search-container animate__animated animate__fadeInRight">
+                                <div class="searchbox">
+                                    <input type="text" class="search-input" id="search" placeholder="Search Job..." autocomplete="off"/>
+                                    <button class="submit"></button>
+                                    <div class="line"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tablet__job--list"></div>
+                        <div class="tablet__back--mainscreen"></div>
+                    </div>
+                </div>
+                <div class="tablet__wrapper" id="create-screen">
+                    <div class="__tablet">
+                        <div class="__tablet--header">
+                            <div class="__tablet--header--left animate__animated animate__fadeInLeft">
+                                <i class='bx bxs-group'></i>
+                                <h3 class="__tablet--header-content">rep group</h3>
+                            </div>
+                            <div class="__tablet--header--right">
+                                <button class="btn animate__animated animate__fadeInRight" id="create-group">
+                                    <p>create group</p>
+                                    <i class='bx bxs-add-to-queue'></i>
+                                </button>
+                                <button class="btn animate__animated animate__fadeInRight animate__delay-2s" id="check-out" data-type="check-out">
+                                    <p>check out</p>
+                                    <i class='bx bxs-exit'></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="__tablet--group-wrapper">
+                            <h3 class="__tablet--group-header left animate__animated animate__fadeInUp animate__delay-3s">groups are idle</h3>
+                            <div class="__tablet--group-list animate__animated animate__fadeIn animate__delay-5s" id="group-idle"></div>
+                            <h3 class="__tablet--group-header right animate__animated animate__fadeInUp animate__delay-6s" style="margin-top: 1.2vh;">groups are busy</h3>
+                            <div class="__tablet--group-list animate__animated animate__fadeInUp animate__delay-8s" id="group-busy"></div>
+                        </div>
+                        <div class="tablet__back--mainscreen"></div>
+                    </div>
+                </div>
+                <div class="tablet__wrapper" id="group-screen">
+                    <div class="__tablet">
+                        <div class="__tablet--header">
+                            <div class="__tablet--header--left animate__animated animate__fadeInLeft">
+                                <i class="fa-solid fa-restroom"></i>
+                                <h3 class="__tablet--header-content">your room</h3>
+                            </div>
+                            <div class="__tablet--header--right" id="room-actions"></div>
+                        </div>
+                        <div class="__tablet--group-wrapper">
+                            <h3 class="__tablet--group-header center animate__animated animate__fadeInUp animate__delay-3s">members list</h3>
+                            <div class="__tablet--member-list animate__animated animate__fadeIn animate__delay-5s"></div>
+                        </div>
+                        <div class="tablet__back--mainscreen"></div>
+                    </div>
+                </div>
+                <div class="tablet__wrapper" id="tasks-screen">
+                    <div class="__tablet">
+                        <div class="__tablet--header">
+                            <div class="__tablet--header--left animate__animated animate__fadeInLeft">
+                                <i class="fa-solid fa-list-check"></i>
+                                <h3 class="__tablet--header-content">group tasks</h3>
+                            </div>
+                            <div class="__tablet--header--right animate__animated animate__fadeInRight">
+                                <p>Time: <span id="minutes">00</span>:<span id="seconds">00</span>:<span id="tens">00</span></p>
+                            </div>
+                        </div>
+                        <div class="__tablet--task-list animate__animated animate__fadeIn animate__delay-4s" id="tasks-list"></div>
+                        <div class="__tablet--task-overlay" id="task-overlay"></div>
+                        <div class="__tablet--task-modal" id="task-modal">
+                            <h3 class="__tablet--modal-header">Task Information</h3>
+                            <i class="fa-solid fa-xmark" id="task-close"></i>
+                            <p class="__tablet--modal-content"></p>
+                        </div>
+                        <div class="tablet__back--mainscreen"></div>
+                    </div>
+                </div>
+                <div class="tablet__wrapper" id="loader-screen">
+                    <div class="loader__wrapper">
+                        <div class="loader">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="loader">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="loader">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="loader">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="loader">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="loader">
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    <div class="svg-container success_icon">    
+                        <svg class="ft-green-tick" xmlns="http://www.w3.org/2000/svg" height="100" width="100" viewBox="0 0 48 48" aria-hidden="true">
+                            <circle class="circle" fill="#5bb543" cx="24" cy="24" r="22"/>
+                            <path class="tick" fill="none" stroke="#FFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M14 27l5.917 4.917L34 17"/>
+                        </svg>
+                    </div>
+                    <div class="text">
+                        <p>Please Wait...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./jquery.min.js"></script>
+    <script src="./app.js"></script>
+    <script src="./groups.js"></script>
+    <script src="./jobCenter.js"></script>
+</body>
+</html>
