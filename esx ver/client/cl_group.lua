@@ -55,7 +55,7 @@ exports("ReQuest", ReQuest)
 RegisterNUICallback('GetData', function(data, cb)
     local job = LocalPlayer.state.nghe
     if job then
-        Core.Functions.TriggerCallback('rep-tablet:callback:getGroupsApp', function (bool, data)
+        ESX.TriggerServerCallback('rep-tablet:callback:getGroupsApp', function (bool, data)
             if bool then
                 SendNUIMessage({
                     action = "addGroupStage",  -- Khi set State thì status về true, còn refresh App thì status của job về false. Nếu Stage == {} thì đưa về giao diện các thành viên trong nhóm
@@ -168,7 +168,7 @@ end)
 -- Khi mà sign in thì sẽ hiện các ra các nhóm của nghề đó
 RegisterNetEvent('rep-tablet:client:signIn', function(bool)
     LocalPlayer.state:set('nghe', bool, false)
-    Core.Functions.TriggerCallback('rep-tablet:callback:getGroupsApp', function (bool, data)
+    ESX.TriggerServerCallback('rep-tablet:callback:getGroupsApp', function (bool, data)
         if bool then
         else
             SendNUIMessage({
@@ -273,12 +273,8 @@ RegisterNetEvent('rep-tablet:jobcenter:sanitation', function()
     SetNewWaypoint(-351.44, -1566.37)
 end)
 
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-    PlayerData = nil
-end)
-
 local function CheckVPN()
-    for _, itemData in pairs(PlayerData.items) do
+    for _, itemData in pairs(ESX.PlayerData.inventory) do
         if itemData.name == 'vpn' then
             return true
         end
@@ -286,9 +282,25 @@ local function CheckVPN()
     return false
 end
 
-RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
-    PlayerData = val
-    Wait(100)
+RegisterNetEvent('esx:removeInventoryItem', function(item, count)
+    local result = CheckVPN()
+    if vpn ~= result then
+        vpn = result
+        JobCenter = {}
+        for k, v in pairs(Config.JobCenter) do
+            if vpn then
+                JobCenter[#JobCenter+1] = v
+            else
+                if v.vpn == false then
+                    JobCenter[#JobCenter+1] = v
+                end
+            end
+        end
+        TriggerServerEvent('rep-tablet:server:updateVPN', result)
+    end
+end)
+
+RegisterNetEvent('esx:addInventoryItem', function(item)
     local result = CheckVPN()
     if vpn ~= result then
         vpn = result
@@ -309,7 +321,6 @@ end)
 -- Handles state if resource is restarted live.
 AddEventHandler('onResourceStart', function(resource)
     if GetCurrentResourceName() == resource then
-        PlayerData = Core.Functions.GetPlayerData()
         vpn = CheckVPN()
         JobCenter = {}
         for k, v in pairs(Config.JobCenter) do
@@ -325,8 +336,8 @@ AddEventHandler('onResourceStart', function(resource)
     end
 end)
 
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    Core.Functions.TriggerCallback('rep-tablet:callback:getGroupsJob', function (data)
+AddEventHandler('esx:onPlayerSpawn', function(spawn)
+    ESX.TriggerServerCallback('rep-tablet:callback:getGroupsJob', function (data)
         Config.JobCenter = data
     end)
     vpn = CheckVPN()
@@ -341,5 +352,4 @@ AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
             end
         end
     end
-    PlayerData = Core.Functions.GetPlayerData()
 end)

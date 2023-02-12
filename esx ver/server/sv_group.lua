@@ -1,11 +1,9 @@
-Core = exports['qb-core']:GetCoreObject()
-
 local Players = {} -- Don't Touch if you don't know
 local Groups = {}
 -- Lấy tên của người chơi
 local function GetPlayerCharName(src)
-    local player = Core.Functions.GetPlayer(src)
-    return player.PlayerData.charinfo.firstname.." "..player.PlayerData.charinfo.lastname
+    local xPlayer = ESX.GetPlayerFromId(src)
+    return xPlayer.getName()
 end
 
 -- Random Name khi có VPN
@@ -19,9 +17,11 @@ end
 local function NotifyGroup(group, msg, type, time)
     if not group or not Groups[group] then return print("Group not found...") end
     for _, v in pairs(Groups[group].members) do
-        TriggerClientEvent('Core:Notify', v.player, msg or "NO MSG", type or 'primary', time or 7500)
+        local xPlayer = ESX.GetPlayerFromId(v.player)
+        xPlayer.showNotification(msg or "NO MSG")
     end
 end
+
 exports("NotifyGroup", NotifyGroup)
 
 -- Gửi thông báo Custom của điện thoại cho tất cả thành viên trong nhóm
@@ -134,7 +134,8 @@ local function ChangeGroupLeader(id)
             if members[i].player ~= leader then
                 Groups[id].leader = members[i].player
                 Groups[id].gName = members[i].name
-                TriggerClientEvent('Core:Notify', members[i].player, "Bạn đã trở thành trưởng nhóm", "success")
+                local xPlayer = ESX.GetPlayerFromId(members[i].player)
+                xPlayer.showNotification("Bạn đã trở thành trưởng nhóm")
                 return true
             end
         end
@@ -197,7 +198,8 @@ local function RemovePlayerFromGroup(src, id, disconnected)
             TriggerClientEvent('rep-tablet:client:UpdateGroupId', src, 0)
             pNotifyGroup(id, "Job Center", src.." has left the group", "fas fa-users", "#FFBF00", 7500)
             TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', src, Groups, true)
-            if not disconnected then TriggerClientEvent("Core:Notify", src, "You have left the group", "error") end
+            local xPlayer = ESX.GetPlayerFromId(src)
+            if not disconnected then xPlayer.showNotification("You have left the group") end
             if Groups[id].users <= 0 then
                 DestroyGroup(id)
             else
@@ -219,8 +221,8 @@ end
 --Tạo nhóm
 RegisterNetEvent("rep-tablet:server:createJobGroup", function(bool, job)
     local src = source
-    local player = Core.Functions.GetPlayer(src)
-    if Players[src] then TriggerClientEvent('Core:Notify', src, "You have already created a group", "error") return end
+    local xPlayer = ESX.GetPlayerFromId(src)
+    if Players[src] then xPlayer.showNotification("You have already created a group") return end
     Players[src] = true
     local ID = #Groups+1
     local name
@@ -237,7 +239,7 @@ RegisterNetEvent("rep-tablet:server:createJobGroup", function(bool, job)
         users = 1,
         leader = src,
         members = {
-            {name = name, cid = player.PlayerData.citizenid, player = src, vpn = bool}
+            {name = name, cid = xPlayer.identifier, player = src, vpn = bool}
         },
         stage = {},
     }
@@ -289,40 +291,43 @@ end)
 
 RegisterNetEvent('rep-tablet:server:requestJoinGroup', function(data)
     local src = source
-    if Players[src] then return TriggerClientEvent("Core:Notify", src, "You are already a part of a group", "error")  end
-    if not Groups[data.id] then return TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") end
+    local xPlayer = ESX.GetPlayerFromId(src)
+    if Players[src] then return  xPlayer.showNotification("You are already a part of a group")  end
+    if not Groups[data.id] then return xPlayer.showNotification("That group doesn't exist") end
     local leader = GetGroupLeader(data.id)
     TriggerClientEvent('rep-tablet:client:requestJoinGroup', leader, src)
 end)
 
 RegisterNetEvent('rep-tablet:client:requestJoin', function(target, bool)
     local src = source
-    if not Groups[GetGroupByMembers(src)] then return TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") end
+    local xPlayer = ESX.GetPlayerFromId(src)
+    if not Groups[GetGroupByMembers(src)] then return xPlayer.showNotification("That group doesn't exist") end
     if bool then
         if getGroupSize(GetGroupByMembers(src)) < 6 then
             TriggerClientEvent('rep-tablet:client:Join', target, GetGroupByMembers(src))
         else
-            TriggerClientEvent("Core:Notify", target, GetGroupByMembers(src).." đã đủ người", "error")
-            TriggerClientEvent("Core:Notify", src, "Không thể tuyển thêm người vào nhóm", "error")
+            local targetPlayer = ESX.GetPlayerFromId(target)
+            targetPlayer.showNotification(GetGroupByMembers(src).." đã đủ người")
+            xPlayer.showNotification("Không thể tuyển thêm người vào nhóm")
         end
     else
-        TriggerClientEvent("Core:Notify", target, "Trưởng nhóm "..GetGroupByMembers(src).." đã từ chối bạn", "error")
+        targetPlayer.showNotification("Trưởng nhóm "..GetGroupByMembers(src).." đã từ chối bạn")
     end
 end)
 
 RegisterNetEvent('rep-tablet:server:Join', function (id, vpn)
     local src = source
-    local player = Core.Functions.GetPlayer(src)
-    if Players[src] then return TriggerClientEvent('Core:Notify', src, "You are already a part of a group!", "success") end
+    local xPlayer = ESX.GetPlayerFromId(src)
+    if Players[src] then return xPlayer.showNotification("You are already a part of a group!") end
     local name
     if vpn then
         name = RandomName()
     else
         name = GetPlayerCharName(src)
     end
-    if not Groups[id] then return TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") end
+    if not Groups[id] then return xPlayer.showNotification("That group doesn't exist") end
     pNotifyGroup(id, "Job Center", src.." has join the group", "fas fa-users", "#FFBF00", 7500)
-    Groups[id].members[#Groups[id].members+1] = {name = name, cid = player.PlayerData.citizenid, player = src, vpn = vpn}
+    Groups[id].members[#Groups[id].members+1] = {name = name, cid = xPlayer.identifier, player = src, vpn = vpn}
     Groups[id].users = Groups[id].users + 1
     Players[src] = true
     local m = getGroupMembers(id)
@@ -332,7 +337,7 @@ RegisterNetEvent('rep-tablet:server:Join', function (id, vpn)
             TriggerClientEvent('rep-tablet:client:AddGroupStage', m[i], Groups[id])
         end
     end
-    TriggerClientEvent('Core:Notify', src, "You joined the group "..id, "success")
+    xPlayer.showNotification("You joined the group "..id)
     TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1, Groups)
     TriggerClientEvent('rep-tablet:client:JoinSuccess',src)
 end)
@@ -358,7 +363,7 @@ RegisterNetEvent('rep-tablet:server:DisbandGroup', function(id)
     DestroyGroup(id)
 end)
 
-Core.Functions.CreateCallback('rep-tablet:callback:getGroupsApp', function(source, cb)
+ESX.RegisterServerCallback('rep-tablet:callback:getGroupsApp', function(source, cb)
     local src = source
     if Players[src] then
         local id = GetGroupByMembers(src)
@@ -368,20 +373,21 @@ Core.Functions.CreateCallback('rep-tablet:callback:getGroupsApp', function(sourc
     end
 end)
 
-Core.Functions.CreateCallback('rep-tablet:callback:getGroupsJob', function(source, cb)
+ESX.RegisterServerCallback('rep-tablet:callback:getGroupsJob', function(source, cb)
     cb(Config.JobCenter)
 end)
 
-Core.Functions.CreateCallback('rep-tablet:callback:CheckPlayerNames', function(source, cb, id)
+ESX.RegisterServerCallback('rep-tablet:callback:CheckPlayerNames', function(source, cb, id)
     local src = source
+    local xPlayer = ESX.GetPlayerFromId(src)
     if Groups[id] == nil then
-        TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") 
+        xPlayer.showNotification("That group doesn't exist")
         cb(false)
     end
     cb(Groups[id].members)
 end)
 
-Core.Functions.CreateCallback('rep-tablet:callback:getDataGroup', function(_, cb, id)
+ESX.RegisterServerCallback('rep-tablet:callback:getDataGroup', function(_, cb, id)
     cb(Groups)
 end)
 

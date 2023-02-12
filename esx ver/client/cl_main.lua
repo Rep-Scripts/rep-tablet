@@ -1,8 +1,7 @@
-Core = exports['qb-core']:GetCoreObject()
 local tabletProp = 0
 local tabletModel = joaat("prop_cs_tablet")
 local isOpen = false
-local isSignoff = false
+local isDead = false
 
 local function LoadAnimation(dict)
 	RequestAnimDict(dict)
@@ -48,11 +47,9 @@ local function Anim()
 end
 
 local function hasTablet()
-    if PlayerData.items then
-        for _, v in pairs(PlayerData.items) do
-            if v.name == 'tablet' then
-                return true
-            end
+    for _, v in pairs(ESX.PlayerData.inventory) do
+        if v.name == 'tablet' then
+            return true
         end
     end
 end
@@ -89,21 +86,18 @@ local function OpenTablet()
         isOpen = true
         Anim()
     else
-        Core.Functions.Notify("You don't have a tablet?", "error")
+        ESX.ShowNotification("You don't have a tablet?")
     end
 end
 
 --Command
 
 RegisterCommand('tablet', function()
-    while not PlayerData do
-        Wait(100)
-    end
     if not isOpen then
-        if not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() then
+        if not isDead and not IsPauseMenuActive() then
             OpenTablet()
         else
-            Core.Functions.Notify("Action not available at the moment..", "error")
+            ESX.ShowNotification("Action not available at the moment..")
         end
     end
 end)
@@ -121,3 +115,8 @@ end)
 RegisterNetEvent("rep-tablet:client:CustomNotification", function(title, text, icon, color, timeout)
     CustomNotification(title, text, icon, color, timeout)
 end)
+
+AddEventHandler('esx:onPlayerDeath', function() isDead = true end)
+
+AddEventHandler('esx:onPlayerSpawn', function(spawn) isDead = false end)
+

@@ -18,5 +18,8 @@ files {
 	'Ui/sounds/*.ogg'
 }
 
-shared_script 'config.lua'
+shared_scripts {
+	'@es_extended/imports.lua',
+	'config.lua'
+}
 lua54 'yes'
