@@ -164,7 +164,6 @@ exports('resetJobStatus', resetJobStatus)
 local function DestroyGroup(id)
     if not Groups[id] then return print("Group :"..id.." not found") end
     local members = getGroupMembers(id)
-    exports['rep-tablet']:resetJobStatus(id)
     if members and #members > 0 then
         for i = 1, #members do
             if members[i] then

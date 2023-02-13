@@ -80,8 +80,8 @@ local function OpenTablet()
         SetNuiFocus(true, true)
         SendNUIMessage({
             action = "open",
-            data = PlayerData,
-            name = PlayerData.charinfo.firstname.." "..PlayerData.charinfo.lastname,
+            data = ESX.PlayerData,
+            name = ESX.PlayerData.firstName.." "..ESX.PlayerData.lastName,
         })
         isOpen = true
         Anim()
