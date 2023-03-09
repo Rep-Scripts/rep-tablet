@@ -1,6 +1,11 @@
 **[Preview](https://youtu.be/xuSjrBG-gRY)**
 **[Github](https://github.com/Rep-Scripts/rep-tablet)**
 
+_Discord Invite:_ https://discord.gg/VxGs8ceG5W
+_Tebex:_ https://rep.tebex.io/
+_Youtube:_ https://www.youtube.com/@repscripts
+_CFX:_ https://forum.cfx.re/u/bahnmifps/activity/topics
+
 > ## **INTRODUCTION**
 
 So, we make groups jobs. From the early versions of ps-playergroups since August 2022, to the latest qb-phone Nopixel inspired.
