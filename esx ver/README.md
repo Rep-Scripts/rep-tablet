@@ -2,8 +2,11 @@
 **[Github](https://github.com/Rep-Scripts/rep-tablet)**
 
 _Discord Invite:_ https://discord.gg/VxGs8ceG5W
+
 _Tebex:_ https://rep.tebex.io/
+
 _Youtube:_ https://www.youtube.com/@repscripts
+
 _CFX:_ https://forum.cfx.re/u/bahnmifps/activity/topics
 
 > ## **INTRODUCTION**
@@ -14,7 +17,8 @@ However, these versions came with features that we didnt like, and 4 months late
 
 The tablet is made so our customers who dont use qb-phone to enjoy our group jobs.
 
-**Therefore, all our jobs will now be compatible with this tablet.**
+**There are no jobs or anything included with these files.**
+**Check out the jobs at our Tebex.**
 
 ---
 
@@ -40,9 +44,15 @@ The tablet is made so our customers who dont use qb-phone to enjoy our group job
 
 ---
 
+> ## **INSTALLATION**
+
+Drag and drop...
+
+---
+
 > ## **🛠️ UPDATES**
->
-> **Update 1.0**
+
+**Update 1.0**
 
 - Release
 
@@ -64,7 +74,6 @@ The tablet is made so our customers who dont use qb-phone to enjoy our group job
 > ## **Check out our other products** :star2:
 
 - [[QB/ESX] Group Postal Op Delivery. NoPixel 3.5 DoDo Inspired](https://forum.cfx.re/t/qb-esx-group-postal-op-delivery-nopixel-3-5-dodo-inspired/4894624/29)
-
 - [NoPixel Inspired Group Sanitation Job v2](https://forum.cfx.re/t/nopixel-inspired-group-sanitation-job-v2/4929184/5)
 - [NoPixel Inspired Oxy Run w/ Money Laundering](https://forum.cfx.re/t/nopixel-inspired-oxy-run-w-money-laundering/4941107/10)
 - [NoPixel Inspired Chop Shop. With Phone Progresses!](https://forum.cfx.re/t/nopixel-inspired-chop-shop-with-phone-progresses/4942864/5)
