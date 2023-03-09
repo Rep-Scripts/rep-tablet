@@ -13,7 +13,7 @@ function addJobsList(data) {
         var addOption = 
         `<div class="tablet__job--item animate__animated animate__fadeInUp animate__delay-${i}s">
             <div class="tablet__job--item--eles">
-                <i class="fa-solid fa-warehouse icon"></i> 
+                <i class="${v.icon} icon"></i> 
             </div>
             <div class="tablet__job--item--eles">
                 <div class="tablet__job--content">

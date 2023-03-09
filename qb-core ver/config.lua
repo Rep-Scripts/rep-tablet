@@ -11,7 +11,9 @@ Config.JobCenter = {
         time = {
             first = 2500,
             second = 10000,
-        }
+        },
+        icon = "fas fa-car-crash"
+
     },
     ['taxi'] = {
         vpn = false,
@@ -23,7 +25,8 @@ Config.JobCenter = {
         time = {
             first = 2500,
             second = 10000,
-        }
+        },
+        icon = "fa-solid fa-taxi"
     },
     ['thefthouse'] = {
         vpn = true,
@@ -35,19 +38,21 @@ Config.JobCenter = {
         time = {
             first = 2500,
             second = 10000,
-        }
+        },
+        icon = "fa-solid fa-mask"
     },
     ['oxyrun'] = {
         vpn = true,
         label = "Oxy Run",
-        event = "sn-oxyrun:client:chiduong",
+        event = "rep-oxyrun:client:chiduong",
         mem = 1,
         count = 0,
         salary = 'mid',
         time = {
             first = 2500,
             second = 10000,
-        }
+        },
+        icon = "fa-solid fa-pills"
     },
     ['theftcar'] = {
         vpn = true,
@@ -59,7 +64,8 @@ Config.JobCenter = {
         time = {
             first = 2500,
             second = 10000,
-        }
+        },
+        icon = "fas fa-lock-open"
     },
     ['postop'] = {
         vpn = false,
@@ -71,11 +77,12 @@ Config.JobCenter = {
         time = {
             first = 2500,
             second = 10000,
-        }
+        },
+        icon = "fa-solid fa-truck-fast"
     },
     ['sani'] = {
         vpn = false,
-        label = "Sanitaion Worker",
+        label = "Sanitation Worker",
         event = "rep-tablet:jobcenter:sanitation",
         mem = 4,
         count = 0,
@@ -83,19 +90,21 @@ Config.JobCenter = {
         time = {
             first = 2500,
             second = 10000,
-        }
+        },
+        icon = "fas fa-trash"
     },
     ['taco'] = {
         vpn = true,
         label = "Taco Shop",
-        event = "sn-weed:client:chiduong",
+        event = "rep-weed:client:chiduong",
         mem = 1,
         count = 0,
         salary = 'mid',
         time = {
             first = 2500,
             second = 10000,
-        }
+        },
+        icon = "fas fa-cannabis"
     },
 }
 
