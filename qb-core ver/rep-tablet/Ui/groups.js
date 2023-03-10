@@ -365,6 +365,7 @@ $(function() {
             closeAllScreen();
             jobPlayer = e.data.job;
             $("#create-screen").fadeIn("1500");
+            $(".__tablet--header-content").html(REP.Tablet.Config[e.data.job].label);
             addBusyGroup(e.data.data, e.data.job);
             addIdleGroup(e.data.data, e.data.job);
         } else if (e.data.action === 'addGroupStage') {

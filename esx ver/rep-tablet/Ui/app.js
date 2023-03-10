@@ -238,10 +238,6 @@ $(function() {
 
     window.addEventListener('message', function(e) {
         if (e.data.action === 'open') {
-            // $("#tasks-screen").hide();
-            // $("#group-screen").hide();
-            // $("#create-screen").hide();
-            // $("#job-screen").hide();
             $("#user-name").html(e.data.name);
             REP.Tablet.Functions.LoadPlayerData(e.data.data);
             REP.Tablet.Functions.OpenTablet();

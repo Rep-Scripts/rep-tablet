@@ -250,9 +250,7 @@ function addIdleGroup(data, job) {
     idleList.html("");
     if(data && data.length > 0) {
         Object.keys(data).map(function(element, index) {
-            if(!data[element].status && data[element].job === job ) {
-                console.log(job)
-                console.log(JSON.stringify(REP.Tablet.Config))
+            if(data[element].status === false && data[element].job === job ) {
                 addOption = `
                     <div class="__tablet--group-item">
                         <i class="fa-solid fa-users icon__idle"></i>
@@ -365,6 +363,7 @@ $(function() {
             closeAllScreen();
             jobPlayer = e.data.job;
             $("#create-screen").fadeIn("1500");
+            $(".__tablet--header-content").html(REP.Tablet.Config[e.data.job].label);
             addBusyGroup(e.data.data, e.data.job);
             addIdleGroup(e.data.data, e.data.job);
         } else if (e.data.action === 'addGroupStage') {
