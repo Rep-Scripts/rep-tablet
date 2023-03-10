@@ -95,7 +95,7 @@ end
 
 --Command
 
-RegisterCommand('tablet', function()
+RegisterNetEvent("OpenTabletRep", function()
     while not PlayerData do
         Wait(100)
     end
@@ -106,6 +106,10 @@ RegisterCommand('tablet', function()
             Core.Functions.Notify("Action not available at the moment..", "error")
         end
     end
+end)
+
+RegisterCommand('tablet', function()
+	TriggerEvent('OpenTabletRep')
 end)
 
 RegisterKeyMapping('tablet', 'Open Tablet', 'keyboard', 'K')
