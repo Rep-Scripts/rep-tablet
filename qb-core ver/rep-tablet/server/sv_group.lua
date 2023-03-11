@@ -8,6 +8,10 @@ local function GetPlayerCharName(src)
     return player.PlayerData.charinfo.firstname.." "..player.PlayerData.charinfo.lastname
 end
 
+Core.Functions.CreateUseableItem("tablet",function(source)
+    TriggerClientEvent('OpenTabletRep', source)
+end)
+
 -- Random Name khi có VPN
 local function RandomName()
     local random1 = math.random(1, #Config.FirstName)
