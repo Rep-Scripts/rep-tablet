@@ -39,6 +39,11 @@ local function ReQuest(title, text, icon, color, timeout, accept, deny)
     return result
 end
 
+RegisterNUICallback('openMap', function()
+    ExecuteCommand('e tablet2')
+    exports['ps-ui']:ShowImage("https://images-ext-2.discordapp.net/external/Fav1ERUT4HznSnjZopp2QH3DHYw2Yh1rLmzyaCgAJUI/https/saeshq2018.weebly.com/uploads/1/1/8/7/118771343/5470709-orig_orig.png?width=690&height=702")
+end)
+
 RegisterNUICallback('AcceptNotification', function()
     request:resolve(true)
     request = nil
