@@ -68,6 +68,7 @@ Drag and drop...
 
 - [QBcore Framework](https://github.com/qbcore-framework)
 - [ESX](https://github.com/esx-framework)
+- [PS- Ui] https://github.com/Project-Sloth/ps-ui
 
 ---
 
