@@ -19,6 +19,10 @@ $(function() {
         e.preventDefault();
         LoadJobCenter();
     });
+    $("#map-open").on("click", function(e) {
+        REP.Tablet.Functions.CloseTablet();
+        $.post('https://rep-tablet/openMap', JSON.stringify({}));
+    });
 
     $(".tablet__back--mainscreen").on("click", function() { 
         $("#job-screen").fadeOut("1500");
