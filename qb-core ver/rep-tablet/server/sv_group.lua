@@ -44,7 +44,7 @@ end
 exports("pNotifyGroup", pNotifyGroup)
 
 --Lấy Id của group bằng members
-local function GetGroupByMembers(src)
+local function getGroupByMembers(src)
     if not Players[src] then return nil end
     for group, _ in pairs(Groups) do
         for _, v in pairs (Groups[group].members) do
@@ -54,6 +54,8 @@ local function GetGroupByMembers(src)
         end
     end
 end
+
+exports("getGroupByMembers", getGroupByMembers)
 
 -- Lấy id của các member trong group bằng id của group
 local function getGroupMembers(id)
@@ -254,7 +256,7 @@ end)
 RegisterNetEvent("rep-tablet:server:updateVPN", function (result)
     local src = source
     if Players[src] then
-        local id = GetGroupByMembers(src)
+        local id = getGroupByMembers(src)
         local leader = isGroupLeader(src, id)
         if result then
             local name = RandomName()
@@ -300,16 +302,16 @@ end)
 
 RegisterNetEvent('rep-tablet:client:requestJoin', function(target, bool)
     local src = source
-    if not Groups[GetGroupByMembers(src)] then return TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") end
+    if not Groups[getGroupByMembers(src)] then return TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") end
     if bool then
-        if getGroupSize(GetGroupByMembers(src)) < 6 then
-            TriggerClientEvent('rep-tablet:client:Join', target, GetGroupByMembers(src))
+        if getGroupSize(getGroupByMembers(src)) < 6 then
+            TriggerClientEvent('rep-tablet:client:Join', target, getGroupByMembers(src))
         else
-            TriggerClientEvent("Core:Notify", target, GetGroupByMembers(src).." đã đủ người", "error")
+            TriggerClientEvent("Core:Notify", target, getGroupByMembers(src).." đã đủ người", "error")
             TriggerClientEvent("Core:Notify", src, "Không thể tuyển thêm người vào nhóm", "error")
         end
     else
-        TriggerClientEvent("Core:Notify", target, "Trưởng nhóm "..GetGroupByMembers(src).." đã từ chối bạn", "error")
+        TriggerClientEvent("Core:Notify", target, "Trưởng nhóm "..getGroupByMembers(src).." đã từ chối bạn", "error")
     end
 end)
 
@@ -364,7 +366,7 @@ end)
 Core.Functions.CreateCallback('rep-tablet:callback:getGroupsApp', function(source, cb)
     local src = source
     if Players[src] then
-        local id = GetGroupByMembers(src)
+        local id = getGroupByMembers(src)
         cb(true, Groups[id])
     else
         cb(false, Groups)
@@ -390,7 +392,7 @@ end)
 
 AddEventHandler('playerDropped', function()
 	local src = source
-    local id = GetGroupByMembers(src)
+    local id = getGroupByMembers(src)
     if id then
         if isGroupLeader(src, id) then
             local change = ChangeGroupLeader(id)
