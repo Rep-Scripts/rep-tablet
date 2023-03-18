@@ -40,7 +40,7 @@ end
 exports("pNotifyGroup", pNotifyGroup)
 
 --Lấy Id của group bằng members
-local function GetGroupByMembers(src)
+local function getGroupByMembers(src)
     if not Players[src] then return nil end
     for group, _ in pairs(Groups) do
         for _, v in pairs (Groups[group].members) do
@@ -50,7 +50,7 @@ local function GetGroupByMembers(src)
         end
     end
 end
-
+exports("getGroupByMembers", getGroupByMembers)
 -- Lấy id của các member trong group bằng id của group
 local function getGroupMembers(id)
     if not id then return print("Group :"..id.." not found") end
@@ -252,7 +252,7 @@ end)
 RegisterNetEvent("rep-tablet:server:updateVPN", function (result)
     local src = source
     if Players[src] then
-        local id = GetGroupByMembers(src)
+        local id = getGroupByMembers(src)
         local leader = isGroupLeader(src, id)
         if result then
             local name = RandomName()
@@ -300,17 +300,17 @@ end)
 RegisterNetEvent('rep-tablet:client:requestJoin', function(target, bool)
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
-    if not Groups[GetGroupByMembers(src)] then return xPlayer.showNotification("That group doesn't exist") end
+    if not Groups[getGroupByMembers(src)] then return xPlayer.showNotification("That group doesn't exist") end
     if bool then
-        if getGroupSize(GetGroupByMembers(src)) < 6 then
-            TriggerClientEvent('rep-tablet:client:Join', target, GetGroupByMembers(src))
+        if getGroupSize(getGroupByMembers(src)) < 6 then
+            TriggerClientEvent('rep-tablet:client:Join', target, getGroupByMembers(src))
         else
             local targetPlayer = ESX.GetPlayerFromId(target)
-            targetPlayer.showNotification(GetGroupByMembers(src).." đã đủ người")
+            targetPlayer.showNotification(getGroupByMembers(src).." đã đủ người")
             xPlayer.showNotification("Không thể tuyển thêm người vào nhóm")
         end
     else
-        targetPlayer.showNotification("Trưởng nhóm "..GetGroupByMembers(src).." đã từ chối bạn")
+        targetPlayer.showNotification("Trưởng nhóm "..getGroupByMembers(src).." đã từ chối bạn")
     end
 end)
 
@@ -365,7 +365,7 @@ end)
 ESX.RegisterServerCallback('rep-tablet:callback:getGroupsApp', function(source, cb)
     local src = source
     if Players[src] then
-        local id = GetGroupByMembers(src)
+        local id = getGroupByMembers(src)
         cb(true, Groups[id])
     else
         cb(false, Groups)
@@ -392,7 +392,7 @@ end)
 
 AddEventHandler('playerDropped', function()
 	local src = source
-    local id = GetGroupByMembers(src)
+    local id = getGroupByMembers(src)
     if id then
         if isGroupLeader(src, id) then
             local change = ChangeGroupLeader(id)
