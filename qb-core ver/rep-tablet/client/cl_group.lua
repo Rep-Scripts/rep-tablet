@@ -88,6 +88,7 @@ RegisterNUICallback('CreateBlip', function(data)
 end)
 
 RegisterNUICallback('readyToJob', function()
+    if groupID == 0 then return end
     local success = ReQuest("Job Offer", 'Would you like to begin this job?', 'fas fa-users', '#FFBF00', "NONE", 'bx bxs-check-square', 'bx bxs-x-square')
     if success == nil then return end
     if success then
