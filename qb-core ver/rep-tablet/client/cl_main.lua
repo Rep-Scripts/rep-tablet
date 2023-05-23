@@ -97,6 +97,7 @@ end
 
 RegisterNetEvent("OpenTabletRep", function()
     while not PlayerData do
+        PlayerData = Core.Functions.GetPlayerData()
         Wait(100)
     end
     if not isOpen then

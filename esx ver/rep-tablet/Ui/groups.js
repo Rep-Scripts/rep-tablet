@@ -250,34 +250,36 @@ function addIdleGroup(data, job) {
     idleList.html("");
     if(data && data.length > 0) {
         Object.keys(data).map(function(element, index) {
-            if(data[element].status === false && data[element].job === job ) {
-                addOption = `
-                    <div class="__tablet--group-item">
-                        <i class="fa-solid fa-users icon__idle"></i>
-                        <div class="__tablet--group-info-item">
-                            <p class="__tablet--group-name">${data[element].gName}</p>
-                        </div>
-                        <div class="__tablet--group-count">
-                            <div class="__tablet--group--count-item">
-                                <i class="fa-solid fa-people-carry-box"></i>
-                                <p class="__tablet--group--count-icon">${REP.Tablet.Config[job].mem}</p>
+            if(data[element]) {
+                if(data[element].status === false && data[element].job === job ) {
+                    addOption = `
+                        <div class="__tablet--group-item">
+                            <i class="fa-solid fa-users icon__idle"></i>
+                            <div class="__tablet--group-info-item">
+                                <p class="__tablet--group-name">${data[element].gName}</p>
                             </div>
-                            <div class="__tablet--group--count-item">
-                                <i class="fa-solid fa-user"></i>
-                                <p class="__tablet--group--count-icon">${data[element].users}</p>
+                            <div class="__tablet--group-count">
+                                <div class="__tablet--group--count-item">
+                                    <i class="fa-solid fa-people-carry-box"></i>
+                                    <p class="__tablet--group--count-icon">${REP.Tablet.Config[job].mem}</p>
+                                </div>
+                                <div class="__tablet--group--count-item">
+                                    <i class="fa-solid fa-user"></i>
+                                    <p class="__tablet--group--count-icon">${data[element].users}</p>
+                                </div>
+                            </div>
+                            <div class="get__overlay" id="join-group" data-id="${data[element].id}">
+                                <i class="fa-solid fa-handshake"></i>
+                                <p>join group</p>
                             </div>
                         </div>
-                        <div class="get__overlay" id="join-group" data-id="${data[element].id}">
-                            <i class="fa-solid fa-handshake"></i>
-                            <p>join group</p>
-                        </div>
-                    </div>
-                `
-                row += addOption;
-                if(index % 3 == 0) {
-                    row += '</div>';
-                    idleList.append(row);
-                    row = `<div class="__tablet--row"> `
+                    `
+                    row += addOption;
+                    if(index % 3 == 0) {
+                        row += '</div>';
+                        idleList.append(row);
+                        row = `<div class="__tablet--row"> `
+                    }
                 }
             }
         });
@@ -293,32 +295,34 @@ function addBusyGroup(data, job) {
     busyList.html("");
     if(data && data.length > 0) {        
         Object.keys(data).map(function(element, index) {
-            if(data[element].status && data[element].job === job) {
-                addOption = 
-                    `
-                    <div class="__tablet--group-item">
-                        <i class="fa-solid fa-users-slash icon__busy"></i>
-                        <div class="__tablet--group-info-item">
-                            <p class="__tablet--group-name">${data[element].gName}</p>
-                        </div>
-                        <div class="__tablet--group-count">
-                            <div class="__tablet--group--count-item">
-                                <i class="fa-solid fa-people-carry-box"></i>
-                                <p class="__tablet--group--count-icon">${data[element].users}</p>
+            if(data[element]) {
+                if(data[element].status && data[element].job === job) {
+                    addOption = 
+                        `
+                        <div class="__tablet--group-item">
+                            <i class="fa-solid fa-users-slash icon__busy"></i>
+                            <div class="__tablet--group-info-item">
+                                <p class="__tablet--group-name">${data[element].gName}</p>
                             </div>
-                            <div class="__tablet--group--count-item">
-                                <i class="fa-solid fa-user"></i>
-                                <p class="__tablet--group--count-icon">${data[element].users}</p>
+                            <div class="__tablet--group-count">
+                                <div class="__tablet--group--count-item">
+                                    <i class="fa-solid fa-people-carry-box"></i>
+                                    <p class="__tablet--group--count-icon">${data[element].users}</p>
+                                </div>
+                                <div class="__tablet--group--count-item">
+                                    <i class="fa-solid fa-user"></i>
+                                    <p class="__tablet--group--count-icon">${data[element].users}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    `;
-                row += addOption;
+                        `;
+                    row += addOption;
 
-                if(index % 3 == 0) {
-                    row += '</div>';
-                    busyList.append(row);
-                    row = `<div class="__tablet--row"> `
+                    if(index % 3 == 0) {
+                        row += '</div>';
+                        busyList.append(row);
+                        row = `<div class="__tablet--row"> `
+                    }
                 }
             }
         });
