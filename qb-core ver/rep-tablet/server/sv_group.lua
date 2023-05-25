@@ -23,9 +23,10 @@ end
 local function NotifyGroup(group, msg, type, time)
     if not group or not Groups[group] then return print("Group not found...") end
     for _, v in pairs(Groups[group].members) do
-        TriggerClientEvent('Core:Notify', v.player, msg or "NO MSG", type or 'primary', time or 7500)
+        TriggerClientEvent('QBQBCore:Notify', v.player, msg or "NO MSG", type or 'primary', time or 7500)
     end
 end
+
 exports("NotifyGroup", NotifyGroup)
 
 -- Gửi thông báo Custom của điện thoại cho tất cả thành viên trong nhóm
@@ -40,7 +41,8 @@ local function pNotifyGroup(group, header, msg, icon, colour, length)
             length or 7500
         )
     end
-end 
+end
+
 exports("pNotifyGroup", pNotifyGroup)
 
 --Lấy Id của group bằng members
@@ -59,7 +61,8 @@ exports("getGroupByMembers", getGroupByMembers)
 
 -- Lấy id của các member trong group bằng id của group
 local function getGroupMembers(id)
-    if not id then return print("Group :"..id.." not found") end
+    if not id then return print("Id not found") end
+    if not Groups[id] then return print("Group :"..id.." not found")  end
     local temp = {}
     for _,v in pairs(Groups[id].members) do
         temp[#temp+1] = v.player
@@ -71,15 +74,16 @@ exports('getGroupMembers', getGroupMembers)
 
 -- Lấy số lượng thành viên trong nhóm
 local function getGroupSize(id)
-    if not id then return print("Group :"..id.." not found") end
+    if not id then return print("Id not found") end
     if not Groups[id] then return print("Group :"..id.." not found") end
     return Groups[id].users
 end
+
 exports('getGroupSize', getGroupSize)
 
 -- Lấy id của trường nhóm bằng id của nhóm
 local function GetGroupLeader(id)
-    if not id then return print("Group :"..id.." not found") end
+      if not id then return print("Id not found") end
     if Groups[id] == nil then
         return
     end
@@ -90,7 +94,8 @@ exports("GetGroupLeader", GetGroupLeader)
 
 -- Trigger event cho các thành viên trong group
 function GroupEvent(id, event, args)
-    if not id then return print("Group :"..id.." not found")  end
+    if not id then return print("Id not found") end
+    if not Groups[id] then return print("Group :"..id.." not found") end
     if not event then return print("no valid event was passed to GroupEvent") end
     local members = getGroupMembers(id)
     if members and #members > 0 then
@@ -98,7 +103,7 @@ function GroupEvent(id, event, args)
             if members[i] then
                 if args ~= nil then
                     TriggerClientEvent(event, members[i], table.unpack(args))
-                else 
+                else
                     TriggerClientEvent(event, members[i])
                 end
             end
@@ -114,11 +119,13 @@ local function isGroupLeader(src, id)
     local grouplead = GetGroupLeader(id)
     return grouplead == src or false
 end
+
 exports('isGroupLeader', isGroupLeader)
 
 ---- Set nhiệm vụ cho nhóm
 local function setJobStatus(id, stages)
-    if not id then return print("Group :"..id.." not found") end
+    if not id then return print("Id not found") end
+    if not Groups[id] then return print("Group :"..id.." not found") end
     Groups[id].status = true
     Groups[id].stage = stages or {}
     local m = getGroupMembers(id)
@@ -133,6 +140,8 @@ exports('setJobStatus', setJobStatus)
 
 -- Đổi trưởng nhóm
 local function ChangeGroupLeader(id)
+    if not id then return print("Id not found") end
+    if not Groups[id] then return print("Group :"..id.." not found") end
     local members = Groups[id].members
     local leader = GetGroupLeader(id)
     if #members > 1 then
@@ -140,7 +149,7 @@ local function ChangeGroupLeader(id)
             if members[i].player ~= leader then
                 Groups[id].leader = members[i].player
                 Groups[id].gName = members[i].name
-                TriggerClientEvent('Core:Notify', members[i].player, "Bạn đã trở thành trưởng nhóm", "success")
+                TriggerClientEvent('QBCore:Notify', members[i].player, "You have become the group leader", "success")
                 return true
             end
         end
@@ -150,7 +159,8 @@ end
 
 -- Reset Stage của nhóm về không
 local function resetJobStatus(id)
-    if not id then return print("Group :"..id.." not found") end
+    if not id then return print("Id not found") end
+    if not Groups[id] then return print("Group :"..id.." not found") end
     Groups[id].status = false
     Groups[id].stage = {}
     local m = getGroupMembers(id)
@@ -160,20 +170,24 @@ local function resetJobStatus(id)
             TriggerClientEvent('rep-tablet:client:AddGroupStage', m[i], Groups[id])
         end
     end
-    TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1, Groups)
+    TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1)
 end
 
 exports('resetJobStatus', resetJobStatus)
 
 -- Xoá nhóm
 local function DestroyGroup(id)
+    if not id then return print("Id not found") end
     if not Groups[id] then return print("Group :"..id.." not found") end
     local members = getGroupMembers(id)
     if members and #members > 0 then
         for i = 1, #members do
             if members[i] then
                 TriggerClientEvent('rep-tablet:client:UpdateGroupId', members[i], 0)
-                TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', members[i], Groups, true)
+                TriggerClientEvent('rep-tablet:client:checkout', members[i])
+                TriggerClientEvent('rep-tablet:client:closeAllNotification', members[i])
+                Wait(100)
+                TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', members[i], true)
                 Players[members[i]] = false
             end
         end
@@ -182,9 +196,8 @@ local function DestroyGroup(id)
         Config.JobCenter[Groups[id].job].count = Config.JobCenter[Groups[id].job].count - 1
     end
     TriggerClientEvent('rep-tablet:client:updateGroupJob', -1, Config.JobCenter)
-    --table.remove(Groups, id)
     Groups[id] = nil
-    TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1, Groups)
+    TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1)
 end
 
 exports("DestroyGroup", DestroyGroup)
@@ -192,6 +205,7 @@ exports("DestroyGroup", DestroyGroup)
 -- Đuổi người chơi khỏi nhóm
 local function RemovePlayerFromGroup(src, id, disconnected)
     if not Players[src]  then return false end
+    if not id then return print("Id not found") end
     if not Groups[id] then return print("Group :"..id.." not found") end
     local g = Groups[id].members
     for k,v in pairs(g) do
@@ -201,8 +215,13 @@ local function RemovePlayerFromGroup(src, id, disconnected)
             Players[src] = false
             TriggerClientEvent('rep-tablet:client:UpdateGroupId', src, 0)
             pNotifyGroup(id, "Job Center", src.." has left the group", "fas fa-users", "#FFBF00", 7500)
-            TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', src, Groups, true)
-            if not disconnected then TriggerClientEvent("Core:Notify", src, "You have left the group", "error") end
+            TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', src, true)
+            if disconnected then 
+                TriggerClientEvent("Core:Notify", src, "You have left the group", "error")
+                TriggerClientEvent('rep-tablet:client:checkout', src)
+            else
+                TriggerClientEvent("Core:Notify", src, "You have left the group", "error")
+            end
             if Groups[id].users <= 0 then
                 DestroyGroup(id)
             else
@@ -214,7 +233,7 @@ local function RemovePlayerFromGroup(src, id, disconnected)
                     end
                 end
             end
-            TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1, Groups)
+            TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1)
             return
         end
     end
@@ -225,7 +244,7 @@ end
 RegisterNetEvent("rep-tablet:server:createJobGroup", function(bool, job)
     local src = source
     local player = Core.Functions.GetPlayer(src)
-    if Players[src] then TriggerClientEvent('Core:Notify', src, "You have already created a group", "error") return end
+    if Players[src] then TriggerClientEvent('QBCore:Notify', src, "You have already created a group", "error") return end
     Players[src] = true
     local ID = #Groups+1
     local name
@@ -246,9 +265,13 @@ RegisterNetEvent("rep-tablet:server:createJobGroup", function(bool, job)
         },
         stage = {},
     }
-    Config.JobCenter[job].count = 1
+    if Config.JobCenter[job] then
+        Config.JobCenter[job].count = Config.JobCenter[job].count + 1
+    else
+        Config.JobCenter[job].count = 1
+    end
     TriggerClientEvent('rep-tablet:client:updateGroupJob', -1, Config.JobCenter)
-    TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1, Groups)
+    TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1)
     TriggerClientEvent('rep-tablet:client:UpdateGroupId', src, ID)
     TriggerClientEvent('rep-tablet:client:AddGroupStage', src, Groups[ID])
 end)
@@ -281,7 +304,7 @@ RegisterNetEvent("rep-tablet:server:updateVPN", function (result)
                 end
             end
         end
-        TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1, Groups)
+        TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1)
         local m = getGroupMembers(id)
         if not m then return end
         for i=1, #m do
@@ -294,38 +317,52 @@ end)
 
 RegisterNetEvent('rep-tablet:server:requestJoinGroup', function(data)
     local src = source
-    if Players[src] then return TriggerClientEvent("Core:Notify", src, "You are already a part of a group", "error")  end
-    if not Groups[data.id] then return TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") end
+    if Players[src] then return TriggerClientEvent("QBCore:Notify", src, "You are already a part of a group", "error")  end
+    if not data.id then
+        return
+    end
+    if not Groups[data.id] then return TriggerClientEvent("QBCore:Notify", src, "That group doesn't exist", "error") end
     local leader = GetGroupLeader(data.id)
     TriggerClientEvent('rep-tablet:client:requestJoinGroup', leader, src)
 end)
 
 RegisterNetEvent('rep-tablet:client:requestJoin', function(target, bool)
     local src = source
-    if not Groups[getGroupByMembers(src)] then return TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") end
+    if not Groups[getGroupByMembers(src)] then return TriggerClientEvent("QBCore:Notify", target, "That group doesn't exist", "error") end
+    if Groups[getGroupByMembers(src)].status == true then
+        TriggerClientEvent("QBCore:Notify", target, "This group is already working", "error")
+        return
+    end
     if bool then
         if getGroupSize(getGroupByMembers(src)) < 6 then
             TriggerClientEvent('rep-tablet:client:Join', target, getGroupByMembers(src))
         else
-            TriggerClientEvent("Core:Notify", target, getGroupByMembers(src).." đã đủ người", "error")
-            TriggerClientEvent("Core:Notify", src, "Không thể tuyển thêm người vào nhóm", "error")
+            TriggerClientEvent("QBCore:Notify", target, getGroupByMembers(src).." is full", "error")
+            TriggerClientEvent("QBCore:Notify", src, "Cannot recruit more people into the team", "error")
         end
     else
-        TriggerClientEvent("Core:Notify", target, "Trưởng nhóm "..getGroupByMembers(src).." đã từ chối bạn", "error")
+        TriggerClientEvent("QBCore:Notify", target, "The group leader "..getGroupByMembers(src).." has rejected you", "error")
     end
 end)
 
 RegisterNetEvent('rep-tablet:server:Join', function (id, vpn)
     local src = source
     local player = Core.Functions.GetPlayer(src)
-    if Players[src] then return TriggerClientEvent('Core:Notify', src, "You are already a part of a group!", "success") end
+    if Players[src] then return TriggerClientEvent('QBCore:Notify', src, "You are already a part of a group!", "success") end
+    if not id then
+        return
+    end
+    if not Groups[id] then return TriggerClientEvent("QBCore:Notify", src, "That group doesn't exist", "error") end
+    if Groups[getGroupByMembers(src)].status == true then
+        TriggerClientEvent("QBCore:Notify", src, "This group is already working", "error")
+        return
+    end
     local name
     if vpn then
         name = RandomName()
     else
         name = GetPlayerCharName(src)
     end
-    if not Groups[id] then return TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") end
     pNotifyGroup(id, "Job Center", src.." has join the group", "fas fa-users", "#FFBF00", 7500)
     Groups[id].members[#Groups[id].members+1] = {name = name, cid = player.PlayerData.citizenid, player = src, vpn = vpn}
     Groups[id].users = Groups[id].users + 1
@@ -337,23 +374,26 @@ RegisterNetEvent('rep-tablet:server:Join', function (id, vpn)
             TriggerClientEvent('rep-tablet:client:AddGroupStage', m[i], Groups[id])
         end
     end
-    TriggerClientEvent('Core:Notify', src, "You joined the group "..id, "success")
-    TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1, Groups)
+    TriggerClientEvent('QBCore:Notify', src, "You joined the group "..id, "success")
+    TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', -1)
     TriggerClientEvent('rep-tablet:client:JoinSuccess',src)
 end)
 
 RegisterNetEvent('rep-tablet:server:LeaveGroup', function(id)
     local src = source
+    if not id then
+        return
+    end
     if not Players[src] then return end
     if isGroupLeader(src, id) then
         local change = ChangeGroupLeader(id)
         if change then
-            RemovePlayerFromGroup(src, id, true)
+            RemovePlayerFromGroup(src, id)
         else
             DestroyGroup(id)
-        end 
+        end
     else
-        RemovePlayerFromGroup(src, id, true)
+        RemovePlayerFromGroup(src, id)
     end
 end)
 
@@ -361,6 +401,25 @@ RegisterNetEvent('rep-tablet:server:DisbandGroup', function(id)
     local src = source
     if not Players[src] then return end
     DestroyGroup(id)
+end)
+
+RegisterNetEvent('rep-tablet:server:checkout', function(id)
+    local src = source
+    if not Players[src] then return end
+    if isGroupLeader(src, id) then
+        if Groups[id].status == true then
+            DestroyGroup(id)
+        else
+            local change = ChangeGroupLeader(id)
+            if change then
+                RemovePlayerFromGroup(src, id, true)
+            else
+                DestroyGroup(id)
+            end
+        end
+    else
+        RemovePlayerFromGroup(src,id, true)
+    end
 end)
 
 Core.Functions.CreateCallback('rep-tablet:callback:getGroupsApp', function(source, cb)
@@ -380,13 +439,13 @@ end)
 Core.Functions.CreateCallback('rep-tablet:callback:CheckPlayerNames', function(source, cb, id)
     local src = source
     if Groups[id] == nil then
-        TriggerClientEvent("Core:Notify", src, "That group doesn't exist", "error") 
+        TriggerClientEvent("QBCore:Notify", src, "That group doesn't exist", "error")
         cb(false)
     end
     cb(Groups[id].members)
 end)
 
-Core.Functions.CreateCallback('rep-tablet:callback:getDataGroup', function(_, cb, id)
+Core.Functions.CreateCallback('rep-tablet:callback:getDataGroup', function(_, cb)
     cb(Groups)
 end)
 
@@ -395,11 +454,15 @@ AddEventHandler('playerDropped', function()
     local id = getGroupByMembers(src)
     if id then
         if isGroupLeader(src, id) then
-            local change = ChangeGroupLeader(id)
-            if change then
-                RemovePlayerFromGroup(src, id, true)
-            else
+            if Groups[id].status == true then
                 DestroyGroup(id)
+            else
+                local change = ChangeGroupLeader(id)
+                if change then
+                    RemovePlayerFromGroup(src, id, true)
+                else
+                    DestroyGroup(id)
+                end
             end
         else
             RemovePlayerFromGroup(src, id, true)

@@ -243,15 +243,22 @@ function addGroupJobs(data) {
     };
 };
 
-function addIdleGroup(data, job) {
+function addGroup(data, job) {
     var addOption;
+    var addOption1;
     var row = `<div class="__tablet--row">`;
+    var row1 = `<div class="__tablet--row">`;
     var idleList = $("#group-idle");
+    var idle = 0;
+    var busy = 0;
     idleList.html("");
-    if(data && data.length > 0) {
-        Object.keys(data).map(function(element, index) {
-            if(data[element]) {
-                if(!data[element].status && data[element].job === job ) {
+    var busyList = $("#group-busy");
+    busyList.html("");
+    if (data && data.length > 0) {
+        Object.keys(data).map(function(element) {
+            if (data[element]) {
+                if (!data[element].status && data[element].job === job) {
+                    idle = idle + 1;
                     addOption = `
                         <div class="__tablet--group-item">
                             <i class="fa-solid fa-users icon__idle"></i>
@@ -273,32 +280,16 @@ function addIdleGroup(data, job) {
                                 <p>join group</p>
                             </div>
                         </div>
-                    `
+                    `;
                     row += addOption;
-                    if(index % 3 == 0) {
+                    if (idle % 3 === 0) {
                         row += '</div>';
                         idleList.append(row);
-                        row = `<div class="__tablet--row"> `
+                        row = `<div class="__tablet--row">`;
                     }
-                }
-            }
-
-        });
-    } else {
-        idleList.html(`<div class="__tablet--group-idle">There are no idle groups available</div>`);
-    };     
-};
-
-function addBusyGroup(data, job) {
-    var addOption;
-    var row = `<div class="__tablet--row">`;
-    var busyList = $("#group-busy");
-    busyList.html("");
-    if(data && data.length > 0) {        
-        Object.keys(data).map(function(element, index) {
-            if(data[element]) {
-                if(data[element].status && data[element].job === job) {
-                    addOption = 
+                } else if (data[element].status && data[element].job === job) {
+                    busy = busy + 1;
+                    addOption1 =
                         `
                         <div class="__tablet--group-item">
                             <i class="fa-solid fa-users-slash icon__busy"></i>
@@ -308,7 +299,7 @@ function addBusyGroup(data, job) {
                             <div class="__tablet--group-count">
                                 <div class="__tablet--group--count-item">
                                     <i class="fa-solid fa-people-carry-box"></i>
-                                    <p class="__tablet--group--count-icon">${data[element].users}</p>
+                                    <p class="__tablet--group--count-icon">${REP.Tablet.Config[job].mem}</p>
                                 </div>
                                 <div class="__tablet--group--count-item">
                                     <i class="fa-solid fa-user"></i>
@@ -317,19 +308,30 @@ function addBusyGroup(data, job) {
                             </div>
                         </div>
                         `;
-                    row += addOption;
-
-                    if(index % 3 == 0) {
-                        row += '</div>';
-                        busyList.append(row);
-                        row = `<div class="__tablet--row"> `
+                    row1 += addOption1;
+                    if (busy % 3 === 0) {
+                        row1 += '</div>';
+                        busyList.append(row1);
+                        row1 = `<div class="__tablet--row">`;
                     }
                 }
             }
         });
+        row += '</div>'; // Add closing tag for idle row
+        idleList.append(row);
+        row1 += '</div>'; // Add closing tag for busy row
+        busyList.append(row1);
+        
+        if (idle === 0) {
+            idleList.html(`<div class="__tablet--group-idle">There are no idle groups available</div>`);
+        }
+        if (busy === 0) {
+            busyList.html(`<div class="__tablet--group-busy">There are no busy groups available</div>`);
+        }
     } else {
+        idleList.html(`<div class="__tablet--group-idle">There are no idle groups available</div>`);
         busyList.html(`<div class="__tablet--group-busy">There are no busy groups available</div>`);
-    };
+    }
 };
 
 function startTimer() {
@@ -368,9 +370,10 @@ $(function() {
             closeAllScreen();
             jobPlayer = e.data.job;
             $("#create-screen").fadeIn("1500");
-            $(".__tablet--header-content").html(REP.Tablet.Config[e.data.job].label);
-            addBusyGroup(e.data.data, e.data.job);
-            addIdleGroup(e.data.data, e.data.job);
+            if (REP.Tablet.Config[e.data.job]) {
+                $(".__tablet--header-content").html(REP.Tablet.Config[e.data.job].label);
+            }
+            addGroup(e.data.data, e.data.job);
         } else if (e.data.action === 'addGroupStage') {
             addGroupJobs(e.data.status);
         } else if (e.data.action === 'reLoop') {

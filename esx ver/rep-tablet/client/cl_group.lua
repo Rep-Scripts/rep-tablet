@@ -107,31 +107,39 @@ end)
 RegisterNUICallback('RequestToJoin', function (data, cb)
     if not requestCoolDown then
         requestCoolDown = true
+        ESX.ShowNotification("Sent Request", "success")
         TriggerServerEvent('rep-tablet:server:requestJoinGroup', data)
         Wait(5000)
         requestCoolDown = false
     else
-        Core.Functions.Notify("You need to wait before requesting again", "error")
+        ESX.ShowNotification("You need to wait before requesting again", "error")
     end
 end)
 
 RegisterNUICallback('checkOut', function (data, cb)
     if groupID ~= 0 or inJob then
-        TriggerServerEvent('rep-tablet:server:LeaveGroup', groupID)
         if inJob then
             SendNUIMessage({
-            action = "closeAllNotification",
-        })
+                action = "closeAllNotification",
+            })
+            TriggerServerEvent('rep-tablet:server:checkout', groupID)
+            LocalPlayer.state:set('nghe', nil, false)
         end
     end
-    LocalPlayer.state:set('nghe', nil, false)
-    TriggerEvent('rep-tablet:client:checkout')
+    if groupID == 0 then
+        TriggerEvent('rep-tablet:client:checkout')
+    end
     SendNUIMessage({
         action = "jobcenter",
         data = JobCenter,
     })
 end)
 
+RegisterNetEvent('rep-tablet:client:closeAllNotification', function ()
+    SendNUIMessage({
+        action = "closeAllNotification",
+    })
+end)
 -- Out khỏi nhóm
 RegisterNUICallback('LeaveGroup', function(data, cb) --data của nhóm ấn vào
     if not data then return end
@@ -155,15 +163,31 @@ end)
 -- Event
 
 -- Làm mới nhóm, ai đang trong stage sẽ không sửa lại
-RegisterNetEvent('rep-tablet:client:RefreshGroupsApp', function(Groups, bool)
+RegisterNetEvent('rep-tablet:client:RefreshGroupsApp', function(bool)
     local job = LocalPlayer.state.nghe
-    if bool then inJob = false end
-    if inJob or not job then return end
-    SendNUIMessage({
-        action = "refreshApp",
-        data = Groups,
-        job = LocalPlayer.state.nghe
-    })
+    if not job then
+        SendNUIMessage({
+            action = "jobcenter",
+            data = JobCenter,
+        })
+    else
+        if bool then inJob = false end
+        if inJob then return end
+        ESX.TriggerServerCallback('rep-tablet:callback:getGroupsApp', function (bool1, data)
+            if bool1 then
+                SendNUIMessage({
+                    action = "addGroupStage",  -- Khi set State thì status về true, còn refresh App thì status của job về false. Nếu Stage == {} thì đưa về giao diện các thành viên trong nhóm
+                    status =  data,   -- cấu trúc của stage https://cdn.discordapp.com/attachments/1036820124784668692/1052217816528461894/image.png
+                })
+            else
+                SendNUIMessage({
+                    action = "refreshApp",  --https://cdn.discordapp.com/attachments/1036820124784668692/1052217278701244527/image.png Cấu trúc data gửi lên
+                    data = data, -- nhớ làm lại bảng for để check xem cái nào cùng job thì add và xem cái status nào bận, cái nào không bận // Thông tin các nhóm
+                    job = LocalPlayer.state.nghe -- Nghề, lọc ra các nhóm trong bảng data có cùng nghề
+                })
+            end
+        end)
+    end
 end)
 
 -- Khi mà sign in thì sẽ hiện các ra các nhóm của nghề đó
@@ -184,14 +208,17 @@ end)
 -- Khi mà sign off thì sẽ chuyển lại giao diện jobcenter
 RegisterNetEvent('rep-tablet:client:signOff', function()
     if groupID ~= 0 or inJob then
-        TriggerServerEvent('rep-tablet:server:LeaveGroup', groupID)
         if inJob then
             SendNUIMessage({
             action = "closeAllNotification",
         })
+        TriggerServerEvent('rep-tablet:server:checkout', groupID)
+        LocalPlayer.state:set('nghe', nil, false)
         end
     end
-    LocalPlayer.state:set('nghe', nil, false)
+    if groupID == 0 then
+        TriggerEvent('rep-tablet:client:checkout')
+    end
     SendNUIMessage({
         action = "jobcenter",
         data = JobCenter,

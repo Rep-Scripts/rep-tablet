@@ -2,7 +2,6 @@ Core = exports['qb-core']:GetCoreObject()
 local tabletProp = 0
 local tabletModel = joaat("prop_cs_tablet")
 local isOpen = false
-local isSignoff = false
 
 local function LoadAnimation(dict)
 	RequestAnimDict(dict)
