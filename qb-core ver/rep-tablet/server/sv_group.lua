@@ -353,7 +353,7 @@ RegisterNetEvent('rep-tablet:server:Join', function (id, vpn)
         return
     end
     if not Groups[id] then return TriggerClientEvent("QBCore:Notify", src, "That group doesn't exist", "error") end
-    if Groups[getGroupByMembers(src)].status == true then
+    if Groups[id].status == true then
         TriggerClientEvent("QBCore:Notify", src, "This group is already working", "error")
         return
     end

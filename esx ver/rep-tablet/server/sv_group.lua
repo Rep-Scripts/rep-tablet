@@ -353,7 +353,7 @@ RegisterNetEvent('rep-tablet:server:Join', function (id, vpn)
         return
     end
     if not Groups[id] then return xPlayer.showNotification("That group doesn't exist") end
-    if Groups[getGroupByMembers(src)].status == true then
+    if Groups[id].status == true then
         xPlayer.showNotification("This group is already working!")
         return
     end
