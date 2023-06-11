@@ -218,7 +218,7 @@ function addGroupJobs(data) {
                     }
                 }
             }
-            var ctd = REP.Tablet.Data.PlayerData.citizenid;
+            var ctd = REP.Tablet.Data.PlayerData.identifier;
             if (ctd !== leaderCID) {
                 $("#room-actions").html('<button class="btn animate__animated animate__fadeInRight" id="leave-group">' +
                     '<p>leave group</p>' +
