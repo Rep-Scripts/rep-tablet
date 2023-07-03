@@ -217,9 +217,9 @@ RegisterNetEvent('rep-tablet:client:signOff', function()
             SendNUIMessage({
             action = "closeAllNotification",
         })
+        end
         TriggerServerEvent('rep-tablet:server:checkout', groupID)
         LocalPlayer.state:set('nghe', nil, false)
-        end
     end
     if groupID == 0 then
         TriggerEvent('rep-tablet:client:checkout')
