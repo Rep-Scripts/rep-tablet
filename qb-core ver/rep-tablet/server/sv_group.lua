@@ -23,7 +23,7 @@ end
 local function NotifyGroup(group, msg, type, time)
     if not group or not Groups[group] then return print("Group not found...") end
     for _, v in pairs(Groups[group].members) do
-        TriggerClientEvent('QBQBCore:Notify', v.player, msg or "NO MSG", type or 'primary', time or 7500)
+        TriggerClientEvent('QBCore:Notify', v.player, msg or "NO MSG", type or 'primary', time or 7500)
     end
 end
 
@@ -45,6 +45,21 @@ end
 
 exports("pNotifyGroup", pNotifyGroup)
 
+--Lấy Group bằng members
+local function getGroup(src)
+    if not Players[src] then return nil end
+    for group, _ in pairs(Groups) do
+        for _, v in pairs (Groups[group].members) do
+            if v.player == src then
+                return Groups[group]
+            end
+        end
+    end
+    return nil
+end
+
+exports("getGroup", getGroup)
+
 --Lấy Id của group bằng members
 local function getGroupByMembers(src)
     if not Players[src] then return nil end
@@ -55,6 +70,7 @@ local function getGroupByMembers(src)
             end
         end
     end
+    return nil
 end
 
 exports("getGroupByMembers", getGroupByMembers)
@@ -85,7 +101,7 @@ exports('getGroupSize', getGroupSize)
 local function GetGroupLeader(id)
       if not id then return print("Id not found") end
     if Groups[id] == nil then
-        return
+        return nil
     end
     return Groups[id].leader
 end
@@ -217,10 +233,10 @@ local function RemovePlayerFromGroup(src, id, disconnected)
             pNotifyGroup(id, "Job Center", src.." has left the group", "fas fa-users", "#FFBF00", 7500)
             TriggerClientEvent('rep-tablet:client:RefreshGroupsApp', src, true)
             if disconnected then 
-                TriggerClientEvent("Core:Notify", src, "You have left the group", "error")
+                TriggerClientEvent("QBCore:Notify", src, "You have left the group", "error")
                 TriggerClientEvent('rep-tablet:client:checkout', src)
             else
-                TriggerClientEvent("Core:Notify", src, "You have left the group", "error")
+                TriggerClientEvent("QBCore:Notify", src, "You have left the group", "error")
             end
             if Groups[id].users <= 0 then
                 DestroyGroup(id)
