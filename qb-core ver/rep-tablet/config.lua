@@ -28,7 +28,7 @@ Config.JobCenter = {
         },
         icon = "fa-solid fa-taxi"
     },
-    ['thefthouse'] = {
+    ['chopshop'] = {
         vpn = true,
         label = "House Robbery",
         event = "sn-houserobbery:client:chiduong",
